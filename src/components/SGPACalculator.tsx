@@ -9,7 +9,6 @@ interface Course {
   id: string;
   name: string;
   credits: number;
-  marks?: number;
   grade?: string;
 }
 
@@ -17,20 +16,20 @@ const facultyWaiverRules = {
   "be-sit-ahs-eng": {
     name: "BE, SIT, AHS, Engineering",
     rules: [
-      { min: 4.00, max: 4.00, waiver: 50 },
-      { min: 3.90, max: 3.99, waiver: 30 },
-      { min: 3.85, max: 3.89, waiver: 20 },
-      { min: 3.80, max: 3.84, waiver: 10 },
+      { minSGPA: 4.00, waiver: 50 },
+      { minSGPA: 3.90, waiver: 30 },
+      { minSGPA: 3.85, waiver: 20 },
+      { minSGPA: 3.80, waiver: 10 },
     ]
   },
   "humanities-social": {
     name: "Humanities & Social Sciences",
     rules: [
-      { min: 3.90, max: 4.00, waiver: 50 },
-      { min: 3.85, max: 3.89, waiver: 40 },
-      { min: 3.80, max: 3.84, waiver: 20 },
-      { min: 3.75, max: 3.79, waiver: 15 },
-      { min: 3.60, max: 3.74, waiver: 10 },
+      { minSGPA: 3.90, waiver: 50 },
+      { minSGPA: 3.85, waiver: 40 },
+      { minSGPA: 3.80, waiver: 20 },
+      { minSGPA: 3.75, waiver: 15 },
+      { minSGPA: 3.60, waiver: 10 },
     ]
   }
 };
@@ -87,14 +86,16 @@ export const SGPACalculator = () => {
 
     const sgpa = totalCredits > 0 ? totalGradePoints / totalCredits : 0;
     
-    // Calculate waiver
+    // Calculate waiver - check from highest to lowest SGPA requirements
     let waiver = { percentage: 0, faculty: "" };
     if (selectedFaculty && facultyWaiverRules[selectedFaculty as keyof typeof facultyWaiverRules]) {
       const faculty = facultyWaiverRules[selectedFaculty as keyof typeof facultyWaiverRules];
       waiver.faculty = faculty.name;
       
-      for (const rule of faculty.rules) {
-        if (sgpa >= rule.min && sgpa <= rule.max) {
+      // Sort rules by minSGPA in descending order and find the first match
+      const sortedRules = [...faculty.rules].sort((a, b) => b.minSGPA - a.minSGPA);
+      for (const rule of sortedRules) {
+        if (sgpa >= rule.minSGPA) {
           waiver.percentage = rule.waiver;
           break;
         }
@@ -151,10 +152,9 @@ export const SGPACalculator = () => {
             </div>
 
             {/* Course Headers */}
-            <div className="hidden md:grid md:grid-cols-6 gap-4 px-4 py-2 bg-muted rounded-lg text-sm font-semibold text-muted-foreground">
+            <div className="hidden md:grid md:grid-cols-5 gap-4 px-4 py-2 bg-muted rounded-lg text-sm font-semibold text-muted-foreground">
               <div className="col-span-2">Course Name</div>
               <div>Credits</div>
-              <div>Marks (0-100)</div>
               <div>Grade</div>
               <div className="text-center">Action</div>
             </div>

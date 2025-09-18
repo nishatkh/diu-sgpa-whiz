@@ -7,7 +7,6 @@ interface Course {
   id: string;
   name: string;
   credits: number;
-  marks?: number;
   grade?: string;
 }
 
@@ -33,7 +32,7 @@ const gradeOptions = [
 
 export const CourseRow = ({ course, onUpdate, onDelete, showDelete }: CourseRowProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-6 gap-4 p-4 bg-card border border-border rounded-lg animate-slide-up">
+    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-4 bg-card border border-border rounded-lg animate-slide-up">
       <div className="md:col-span-2">
         <Input
           placeholder="Course Name"
@@ -56,42 +55,12 @@ export const CourseRow = ({ course, onUpdate, onDelete, showDelete }: CourseRowP
       </div>
       
       <div>
-        <Input
-          type="number"
-          placeholder="Marks (0-100)"
-          value={course.marks || ""}
-          onChange={(e) => {
-            const marks = parseFloat(e.target.value);
-            onUpdate(course.id, "marks", marks);
-            // Auto-convert marks to grade
-            if (!isNaN(marks)) {
-              let grade = "F";
-              if (marks >= 80) grade = "A+";
-              else if (marks >= 75) grade = "A";
-              else if (marks >= 70) grade = "A-";
-              else if (marks >= 65) grade = "B+";
-              else if (marks >= 60) grade = "B";
-              else if (marks >= 55) grade = "B-";
-              else if (marks >= 50) grade = "C+";
-              else if (marks >= 45) grade = "C";
-              else if (marks >= 40) grade = "D";
-              
-              onUpdate(course.id, "grade", grade);
-            }
-          }}
-          className="input-academic"
-          min="0"
-          max="100"
-        />
-      </div>
-      
-      <div>
         <Select 
           value={course.grade || ""} 
           onValueChange={(value) => onUpdate(course.id, "grade", value)}
         >
           <SelectTrigger className="input-academic">
-            <SelectValue placeholder="Grade" />
+            <SelectValue placeholder="Select Grade" />
           </SelectTrigger>
           <SelectContent>
             {gradeOptions.map((option) => (
