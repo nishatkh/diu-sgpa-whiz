@@ -209,7 +209,7 @@ export const SGPACalculator = () => {
 
         {/* Footer */}
         <div className="text-center text-muted-foreground text-sm animate-fade-in">
-          <p>© 2024 DIU SGPA Calculator. Built for Dhaka International University students.</p>
+          <p>© 2025 DIU SGPA Calculator. Built for Daffodil International University students.</p>
         </div>
       </div>
     </div>
